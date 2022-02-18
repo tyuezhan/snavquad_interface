@@ -65,7 +65,7 @@ tmux send-keys -t $SESSION_NAME "roscore" Enter
 tmux new-window -t $SESSION_NAME -n "Main"
 tmux send-keys -t $SESSION_NAME "sws; sleep 4; roslaunch snavquad_interface voxl_vio.launch pub_odom_base_link:=true imu_rate:=150" Enter
 tmux split-window -t $SESSION_NAME
-tmux send-keys -t $SESSION_NAME "sws; sleep 9; roslaunch snavquad_interface quad_control.launch use_vicon:=false" Enter
+tmux send-keys -t $SESSION_NAME "sws; sleep 18; roslaunch snavquad_interface quad_control.launch use_vicon:=false" Enter
 
 tmux new-window -t $SESSION_NAME -n "Cams"
 tmux send-keys -t $SESSION_NAME "sws; roslaunch snavquad_interface stereo.launch board_type:=voxl"
@@ -78,7 +78,7 @@ tmux select-layout -t $SESSION_NAME tiled
 tmux new-window -t $SESSION_NAME -n "Aux"
 tmux send-keys -t $SESSION_NAME "sws; sleep 12; roslaunch snavquad_interface snav_vio_overlay.launch" Enter
 tmux split-window -t $SESSION_NAME
-tmux send-keys -t $SESSION_NAME "sws; sleep 7; roscd kr_trackers/scripts; chmod a+x twist_to_velocity_goal.py; rosrun kr_trackers twist_to_velocity_goal.py __ns:=${MAV_NAME}" Enter
+tmux send-keys -t $SESSION_NAME "sws; sleep 7; roscd kr_trackers; cd ../../lib/kr_trackers/; chmod a+x twist_to_velocity_goal.py; rosrun kr_trackers twist_to_velocity_goal.py __ns:=${MAV_NAME}" Enter
 tmux split-window -t $SESSION_NAME
 tmux send-keys -t $SESSION_NAME "sws; roscd snavquad_interface/scripts/capture; chmod a+x record.sh; ./record.sh $MAV_ID"
 tmux split-window -t $SESSION_NAME
