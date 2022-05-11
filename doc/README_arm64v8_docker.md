@@ -149,6 +149,8 @@ ln -s ~/voxl_home/common_pkgs/snap_msgs snap_msgs
 git clone https://github.com/ATLFlight/snap_cam_ros
 git clone https://github.com/ATLFlight/snap_cpa
 git clone https://github.com/ATLFlight/snap_vio
+git clone https://github.com/ATLFlight/snav_ros.git
+git clone https://github.com/ATLFlight/snav_msgs.git
 git clone https://github.com/tdinesh/snap_imu.git -b fix/publish_rate
 git clone https://gitlab.com/tdineshd/voxl-cam-ros.git -b devel_cinfo_path
 git clone https://gitlab.com/tdineshd/voxl-hal3-tof-cam-ros.git -b fix/depth_image
