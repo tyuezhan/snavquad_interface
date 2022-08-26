@@ -19,7 +19,7 @@ sudo apt install qemu-user-static android-tools-adb android-tools-fastboot
 ## Get the arm64v8/noetic-bionic docker
 
 ```
-docker pull kumarrobotics/voxl:arm64v8-noetic_bionic_mrsl
+docker pull kumarrobotics/voxl:arm64v8-noetic_focal_mrsl
 ```
 
 ## (Alternate) Build arm64v8/noetic-bionic on an x86 machine
