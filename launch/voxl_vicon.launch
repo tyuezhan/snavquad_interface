@@ -115,7 +115,7 @@
       type="quadrotor_ukf"
       name="quadrotor_ukf"
       output="screen" launch-prefix="$(arg launch_prefix)">
-      <remap from="~odom_slam" to="/vicon/$(arg mav_name)/odom_throttled"/>
+      <remap from="~odom_slam" to="/vicon/$(arg mav_name)/odom"/>
       <remap from="~imu" to="imu"/>
       <param name="frame_id" value="$(arg odom_frame_id)"/>
       <param name="imu_rotated_frame_id" value="$(arg imu_rotated_frame_id)" />
