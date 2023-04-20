@@ -65,7 +65,7 @@ tmux send-keys -t $SESSION_NAME "roscore" Enter
 tmux new-window -t $SESSION_NAME -n "Main"
 tmux send-keys -t $SESSION_NAME "sws; sleep 4; roslaunch snavquad_interface voxl_vio.launch pub_odom_base_link:=true imu_rate:=150" Enter
 tmux split-window -t $SESSION_NAME
-tmux send-keys -t $SESSION_NAME "sws; sleep 18; roslaunch snavquad_interface quad_control.launch use_vicon:=false" Enter
+tmux send-keys -t $SESSION_NAME "sws; sleep 9; roslaunch snavquad_interface quad_control.launch use_vicon:=false" Enter
 
 tmux new-window -t $SESSION_NAME -n "Cams"
 tmux send-keys -t $SESSION_NAME "sws; roslaunch snavquad_interface stereo.launch board_type:=voxl"

@@ -7,6 +7,7 @@ git clone https://github.com/tynguyen/arm64v8_dockers.git
 
 Install Docker CE
 ```
+cd ~/Downloads/arm64v8_dockers
 bash install_docker_ce.sh
 ```
 To install qemu tools
@@ -16,13 +17,13 @@ sudo apt install qemu-user-static android-tools-adb android-tools-fastboot
 ```
 ---
 
-## Get the arm64v8/noetic-bionic docker
+### Get the arm64v8/noetic-bionic docker
 
 ```
 docker pull kumarrobotics/voxl:arm64v8-noetic_focal_mrsl
 ```
 
-## (Alternate) Build arm64v8/noetic-bionic on an x86 machine
+#### (Alternate) Build arm64v8/noetic-bionic on an x86 machine
 Make sure the you've installed the prerequisites
 
 Following registers new handlers for ELF binaries built for alternative architectures 
@@ -36,7 +37,7 @@ This will take a while. Grab a coffee!
 
 ---
 
-## Setup common package folder (both for indigo/noetic)
+### Setup common package folder (both for indigo/noetic)
 ```
 mkdir -p ~/voxl_home/common_pkgs
 cd ~/voxl_home/common_pkgs
@@ -46,12 +47,15 @@ git clone https://github.com/catkin/catkin_simple.git
 git clone https://github.com/KumarRobotics/jps3d.git
 git clone https://github.com/ATLFlight/snap_msgs.git
 
-git clone https://github.com/tdinesh/qflight_descriptions.git -b devel_kr
-git clone https://github.com/tdinesh/snavquad_interface.git -b devel_cleanup
+git clone https://githuzb.com/tdinesh/qflight_descriptions.git -b devel_kr
+git clone https://github.com/tdinesh/snavquad_interface.git -b devel
 git clone https://github.com/tdinesh/snav_replanning.git -b devel_noetic
 
 git clone https://github.com/KumarRobotics/kr_mav_control.git
 git clone https://github.com/KumarRobotics/multi_mav_manager.git
+
+cd ~/voxl_home/common_pkgs/apriltag
+git submodule update --init
 
 cd ~/voxl_home/common_pkgs/kr_mav_control
 git submodule update --init
@@ -60,7 +64,7 @@ cd ~/voxl_home/common_pkgs/multi_mav_manager
 git submodule update --init
 ```
 
-## Setup noetic workspace
+### Setup noetic workspace
 ```
 mkdir -p ~/voxl_home/ws_noetic/src
 cd ~/voxl_home/ws_noetic/src
@@ -74,24 +78,26 @@ ln -s ../../common_pkgs common_pkgs
 
 ### Get noetic packages
 
+```
 git clone https://github.com/tdinesh/ewok.git -b devel_replan_noetic
-
+git clone https://github.com/tdinesh/tag_man.git
+```
 
 ---
 
-## Run the arm64v8 noetic docker
+### Run the arm64v8 noetic docker
 
 ```
 sudo docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 ```
 
-#change the folder location for voxl_home to your own shared folder
+ * change the folder location for voxl_home to your own shared folder
 
 ```
 sudo docker run -it --privileged \
   --net=host --name voxl_noetic_docker \
   -v /dev/ptmx:/opt/ptmx \
-  -v /home/voxl_home:/root/voxl_home:rw \
+  -v ~/voxl_home:/root/voxl_home:rw \
   -w /root/ \
   kumarrobotics/voxl:arm64v8-noetic_focal_mrsl \
   /bin/bash
@@ -103,13 +109,20 @@ sudo docker exec -it voxl_noetic_docker /bin/bash
 Compile the noetic workspace in the docker
 
 ```
+cd ~/voxl_home/ws_noetic
 catkin config -DCMAKE_BUILD_TYPE=Release
 catkin config --install
+catkin build -c
 ```
+  * Compiling takes roughly 40-50min based on the system
+
 
 ---
 
-## Setup indigo workspace
+### Setup indigo workspace
+
+Open a new terminal and setup indigo workspace
+  * Note do not run the following instructions in the noetic docker.
 ```
 mkdir -p ~/voxl_home/ws_indigo/src
 cd ~/voxl_home/ws_indigo/src
@@ -126,9 +139,11 @@ ln -s ../../common_pkgs/snavquad_interface  snavquad_interface
 ```
 
 ### Get indigo pacakges
+
+  * Following assumes you have setup ssh-keys for github
 ```
 
-git clone https://github.com/tdinesh/quadrotor_ukf.git -b devel_tf_imu
+git clone git@github.com:tdinesh/quadrotor_ukf.git -b devel_tf_imu
 
 git clone https://github.com/ros/roslint.git
 git clone https://github.com/ros-perception/image_transport_plugins.git -b indigo-devel
@@ -136,7 +151,7 @@ git clone https://github.com/ros-perception/image_common.git -b hydro-devel
 git clone https://github.com/ros/xacro.git -b indigo-devel
 git clone https://github.com/ros-perception/vision_opencv.git  -b indigo
 
-git clone https://github.com/ros/geometry2.git -b noetic-devel
+git clone https://github.com/ros/geometry2.git -b melodic-devel
 touch geometry2/geometry2/CATKIN_IGNORE geometry2/test_tf2/CATKIN_IGNORE geometry2/tf2/CATKIN_IGNORE geometry2/tf2_bullet/CATKIN_IGNORE geometry2/tf2_kdl/CATKIN_IGNORE geometry2/tf2_msgs/CATKIN_IGNORE geometry2/tf2_py/CATKIN_IGNORE geometry2/tf2_ros/CATKIN_IGNORE geometry2/tf2_sensor_msgs/CATKIN_IGNORE geometry2/tf2_tools/CATKIN_IGNORE
 
 git clone https://github.com/ros/geometry.git -b indigo-devel
@@ -146,26 +161,19 @@ mkdir -p ~/voxl_home/ws_indigo/src/snap
 cd ~/voxl_home/ws_indigo/src/snap
 ln -s ~/voxl_home/common_pkgs/snap_msgs snap_msgs
 
-git clone https://github.com/ATLFlight/snap_cam_ros
 git clone https://github.com/ATLFlight/snap_cpa
 git clone https://github.com/ATLFlight/snap_vio
-git clone https://github.com/ATLFlight/snav_ros.git
-git clone https://github.com/ATLFlight/snav_msgs.git
 git clone https://github.com/tdinesh/snap_imu.git -b fix/publish_rate
 git clone https://gitlab.com/tdineshd/voxl-cam-ros.git -b devel_cinfo_path
 git clone https://gitlab.com/tdineshd/voxl-hal3-tof-cam-ros.git -b fix/depth_image
 
-cd ~/voxl_home/ws_indigo/src/snap/snap_cam_ros
-git submodule update --init
-cd ~/voxl_home/ws_indigo/src/snap/snav_ros
-git submodule update --init
-cd ~/voxl_home/ws_indigo/src/snap/voxl_cam_ros
+cd ~/voxl_home/ws_indigo/src/snap/voxl-cam-ros
 git submodule update --init
 
 cd ~/voxl_home/ws_indigo/
 ```
 
-## Download and the voxl-emulator docker
+### Download and the voxl-emulator docker
 ```
 cd ~/Downloads
 git clone https://gitlab.com/voxl-public/voxl-docker.git
@@ -173,17 +181,36 @@ cd voxl-docker
 
 sudo install -m 0755 files/voxl-docker.sh /usr/local/bin/voxl-docker
 
-docker pull kumarrobotics/voxl:voxl-emulator-v1.2-mrsl
+sudo docker pull kumarrobotics/voxl:voxl-emulator-v1.2-mrsl
 ```
 
-## Run the voxl-emulator
+### Run the voxl-emulator
 ```
 sudo voxl-docker -i kumarrobotics/voxl:voxl-emulator-v1.2-mrsl -d ~/voxl_home
 ```
 
 Compile the indigo workspace in the emulator. Use `catkin build -c`to ignore errors
+```
+pip3 install rospkg
+cd ~/ws_indigo
+catkin config -DCMAKE_BUILD_TYPE=Release
+catkin config --install
+source /opt/ros/indigo/setup.bash
+catkin build -c
+```
+  * Compiling takes roughly 20-30min based on the system
 
-`source /opt/ros/indigo/setup.bash`
+### Setting the cameras
+
+Check the camera configurations from
+https://docs.modalai.com/configure-cameras/
+
+https://docs.modalai.com/voxl-camera-config/
+
+Then ex Tracking + TOF
+`voxl-configure-cameras 5`
+
+---
 
 ###  Note about building packages in voxl emulater
 
@@ -193,7 +220,7 @@ It is very important to specify correct fpu flags, otherwise the NEON engine wil
 
 `-march=armv7-a -mfloat-abi=softfp -mfpu=neon-vfpv4`
 
-### Removing old melodic docker on voxl
+### Removing old melodic docker on voxl (Only needed if noetic docker is not setup)
 
 `sudo docker ps -a`
 
@@ -202,7 +229,7 @@ Get the ContainerID corresponding to arm64v8/melodic:bionic-melodic
 ```
 sudo docker stop ContainerID
 sudo docker rm ContainerID
-sudodocker rmi arm64v8/melodic:bionic-melodic
+sudo docker rmi arm64v8/melodic:bionic-melodic
 
 cd /mnt/sdcard
 sudo docker load --input arm64v8-noetic-focal_voxl.tar.gz
@@ -215,14 +242,9 @@ sudo docker run -it --privileged \
   kumarrobotics/voxl:arm64v8-noetic-focal_voxl \
   /bin/bash
 
+exit
+
 sudo docker start voxl_noetic_docker
 sudo docker exec -it voxl_noetic_docker /bin/bash
 ```
 
-### Setting the cameras
-
-Check the configurations from
-https://docs.modalai.com/camera-connections/#camera-ports
-
-Then ex Tracking + TOF
-`voxl-configure-cameras 5`
