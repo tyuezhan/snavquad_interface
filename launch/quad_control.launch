@@ -4,7 +4,7 @@
   <arg name="mass" default="$(optenv MAV_MASS)"/>
 
   <arg name="use_vicon" default="false"/>
-  <arg name="odom_topic" value="odom" if="$(arg use_vicon)"/>
+  <arg name="odom_topic" value="/vicon/$(arg mav_name)/odom" if="$(arg use_vicon)"/>
   <arg name="odom_topic" value="quadrotor_ukf/control_odom" unless="$(arg use_vicon)"/>
   <arg name="odom_topic_throttled" value="quadrotor_ukf/control_odom_throttled"/>
   <arg name="odom_throttle_rate" default="30"/>
